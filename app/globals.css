@@ -1,26 +1,245 @@
 @import "tailwindcss";
 
+/* ── Font fallbacks (Next.js injects --font-display, --font-body, --font-code via layout.tsx) ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-display-fallback: "Bebas Neue", Impact, sans-serif;
+  --font-body-fallback:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-code-fallback:    "IBM Plex Mono", ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Design tokens — dark-first ────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  /* PCB hero grid */
+  --pcb-dot:  rgba(30, 37, 48, 0.8);
+  --pcb-line: rgba(30, 37, 48, 0.28);
+
+  /* New homepage tokens */
+  --bg:           #0a0c0f;
+  --surface:      #111418;
+  --border:       #1e2530;
+  --amber:        #f59e0b;
+  --amber-dim:    #b37a08;
+  --amber-glow:   rgba(245, 158, 11, 0.15);
+  --text:         #e8eaed;
+  --text-dim:     #7a8494;
+  --text-muted:   #888888;
+
+  /* Compat aliases — used by subpages */
+  --bg-surface:     #111418;
+  --bg-raised:      #161b22;
+  --border-strong:  #2e3740;
+  --accent:         #f59e0b;
+  --accent-hover:   #d97706;
+  --nav-bg:         rgba(10, 12, 15, 0.95);
+  --shadow:         0 1px 6px rgba(0,0,0,0.45), 0 4px 20px rgba(0,0,0,0.45);
+  --shadow-sm:      0 1px 4px rgba(0,0,0,0.35);
+  --tag-bg:         rgba(245,158,11,0.12);
+  --tag-text:       #f59e0b;
+  --status-on:      #22c55e;
+  --focus-ring:     #f59e0b;
+  --btn-primary:         #f59e0b;
+  --btn-primary-text:    #0a0c0f;
+  --btn-primary-hover:   #d97706;
+  --btn-outline-border:  #2e3740;
+
+  /* Circuit background — used by BackgroundCircuit on subpages */
+  --circuit-line: rgba(245, 158, 11, 0.07);
+  --circuit-node: rgba(245, 158, 11, 0.18);
+
+  /* Homepage section tags */
+  --tag-ev:       #0d3a2e;
+  --tag-ev-text:  #34d399;
+  --tag-dom:      #1a2540;
+  --tag-dom-text: #93c5fd;
+  --tag-com:      #2a1a10;
+  --tag-com-text: #fb923c;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Light theme ────────────────────────────────────────────── */
+[data-theme="light"] {
+  /* PCB hero grid */
+  --pcb-dot:  rgba(160, 138, 100, 0.55);
+  --pcb-line: rgba(160, 138, 100, 0.22);
+
+  --bg:           #FAF8F4;
+  --surface:      #FFFFFF;
+  --border:       #E5E0D8;
+  --amber:        #D97706;
+  --amber-dim:    #B45309;
+  --amber-glow:   rgba(217, 119, 6, 0.12);
+  --text:         #1C1C1E;
+  --text-dim:     #6B6B72;
+  --text-muted:   #6B6B72;
+
+  --bg-surface:     #FFFFFF;
+  --bg-raised:      #F0EDE8;
+  --border-strong:  #C8BEB2;
+  --accent:         #D97706;
+  --accent-hover:   #B45309;
+  --nav-bg:         rgba(255, 252, 249, 0.96);
+  --shadow:         0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.05);
+  --tag-bg:         #FEF3C7;
+  --tag-text:       #92400E;
+  --status-on:      #16A34A;
+  --focus-ring:     #D97706;
+  --btn-primary:         #1C1C1E;
+  --btn-primary-text:    #FAF8F4;
+  --btn-primary-hover:   #374151;
+  --btn-outline-border:  #C8BEB2;
+
+  --circuit-line: rgba(175, 150, 115, 0.18);
+  --circuit-node: rgba(175, 150, 115, 0.32);
+
+  --tag-ev:       #D1FAE5;
+  --tag-ev-text:  #065F46;
+  --tag-dom:      #DBEAFE;
+  --tag-dom-text: #1E40AF;
+  --tag-com:      #FEF3C7;
+  --tag-com-text: #92400E;
 }
+
+/* ── Base ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body, "IBM Plex Sans", system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Shared UI — used by subpages ────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-primary:hover  { background: var(--btn-primary-hover); }
+.btn-primary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--btn-outline-border);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-outline:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Scroll reveal ────────────────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Circuit trace (horizontal line, node→card) ─────────────── */
+.trace-line {
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.5s ease 0.35s;
+}
+.trace-line.trace-right {
+  transform-origin: right center;
+}
+[data-reveal].is-visible .trace-line {
+  transform: scaleX(1);
+}
+
+/* ── Node glow on enter ──────────────────────────────────────── */
+.circuit-node {
+  transition: box-shadow 0.5s ease 0.25s;
+}
+[data-reveal].is-visible .circuit-node {
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12), 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(245,158,11,0.2); }
+  50%       { box-shadow: 0 0 18px rgba(245,158,11,0.5); }
+}
+
+.anim-fade-up { animation: fade-up 0.35s ease-out forwards; }
+.anim-pulse   { animation: pulse-amber 2.2s ease-in-out infinite; }
+.anim-glow    { animation: glow-pulse 2.5s ease-in-out infinite; }
+
+/* ── Hanging bulb sway ─────────────────────────────────────── */
+@keyframes bulb-sway {
+  0%   { transform: rotate(0deg); }
+  8%   { transform: rotate(11deg); }
+  22%  { transform: rotate(-7.5deg); }
+  36%  { transform: rotate(5deg); }
+  49%  { transform: rotate(-3deg); }
+  61%  { transform: rotate(1.8deg); }
+  73%  { transform: rotate(-0.8deg); }
+  85%  { transform: rotate(0.3deg); }
+  100% { transform: rotate(0deg); }
+}
+.bulb-sway {
+  animation: bulb-sway 1.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  transform-origin: top center;
+}
+
+/* ── Reduce motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .trace-line   { transform: scaleX(1) !important; }
+  .bulb-sway    { animation: none !important; }
 }

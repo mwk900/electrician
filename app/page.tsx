@@ -1,65 +1,848 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import TopIslandNav from '@/components/TopIslandNav';
+
+// ─── Colour constants (CSS variables — respond to theme toggle) ──────────────
+const C = {
+  bg:        'var(--bg)',
+  surface:   'var(--surface)',
+  border:    'var(--border)',
+  amber:     'var(--amber)',
+  amberDim:  'var(--amber-dim)',
+  amberGlow: 'var(--amber-glow)',
+  text:      'var(--text)',
+  textDim:   'var(--text-dim)',
+  textMuted: 'var(--text-muted)',
+};
+/// Amber button text: always dark — contrasts on both light (#D97706) and dark (#f59e0b) amber
+const AMBER_BTN_TEXT = '#0a0c0f';
+
+const F = {
+  display: 'var(--font-display, "Bebas Neue", sans-serif)',
+  body:    'var(--font-body, "IBM Plex Sans", system-ui, sans-serif)',
+  code:    'var(--font-code, "IBM Plex Mono", monospace)',
+};
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+const FAULTS = [
+  {
+    id: 'tripping',
+    label: 'Tripping breaker',
+    diagnosis: 'A circuit is overloaded or there\'s a fault on one of your appliances.',
+    action: 'Unplug appliances one by one, then reset the breaker. If it trips immediately with nothing on, call us — there may be a wiring fault.',
+  },
+  {
+    id: 'dead-socket',
+    label: 'Dead socket',
+    diagnosis: 'The socket is likely on a ring circuit protected by a tripped RCD, or there\'s a loose connection behind the face.',
+    action: 'Check your consumer unit for any tripped RCD or breaker. If all looks fine, book a fault inspection — don\'t open the socket yourself.',
+  },
+  {
+    id: 'flickering',
+    label: 'Flickering lights',
+    diagnosis: 'Loose terminal connections at the fitting or switch, a failing lamp, or occasionally a sign of an overloaded circuit.',
+    action: 'Replace the bulb first. If it continues, switch off at the wall. Loose connections generate heat and can cause fires.',
+  },
+  {
+    id: 'burning',
+    label: 'Burning smell',
+    diagnosis: 'Overheating wire insulation, a faulty socket, or an appliance fault. This should be treated as urgent.',
+    action: 'Switch off the suspected circuit at the consumer unit immediately. Do not ignore this. Call us same day.',
+  },
+  {
+    id: 'no-power',
+    label: 'No power in room',
+    diagnosis: 'A dedicated breaker for that zone has tripped, or there\'s a broken or damaged cable run.',
+    action: 'Check your consumer unit for a tripped breaker or RCD. If nothing is tripped, there may be a cable fault — book an inspection.',
+  },
+  {
+    id: 'buzzing',
+    label: 'Buzzing sound',
+    diagnosis: 'A buzzing from a fitting or switch typically means a loose connection or a failing dimmer module.',
+    action: 'Stop using the switch or socket. Arcing from loose connections causes fires. Book a fault inspection.',
+  },
+];
+
+const SERVICES = [
+  { icon: '⚡', label: 'Consumer unit upgrades' },
+  { icon: '🔌', label: 'Full & partial rewires' },
+  { icon: '🚗', label: 'EV charger installation' },
+  { icon: '📋', label: 'EICR certificates' },
+  { icon: '💡', label: 'Sockets & lighting' },
+  { icon: '🏠', label: 'Smart home wiring' },
+];
+
+const RECENT_WORK = [
+  {
+    title: 'Consumer Unit Upgrade',
+    location: 'Beeston',
+    tag: 'DOMESTIC',
+    tagStyle: { background: 'var(--tag-dom)', color: 'var(--tag-dom-text)' },
+    desc: 'Old fuse board replaced with a modern unit — all circuits RCD-protected.',
+  },
+  {
+    title: 'EV Charger Install',
+    location: 'West Bridgford',
+    tag: 'EV',
+    tagStyle: { background: 'var(--tag-ev)', color: 'var(--tag-ev-text)' },
+    desc: 'Ohme home charger installed with dedicated circuit run from consumer unit.',
+  },
+  {
+    title: 'Kitchen Full Rewire',
+    location: 'Arnold',
+    tag: 'DOMESTIC',
+    tagStyle: { background: 'var(--tag-dom)', color: 'var(--tag-dom-text)' },
+    desc: 'New circuits for hob, oven, extractor and LED downlights. Tidy, fully certified.',
+  },
+];
+
+const AREAS = [
+  'Nottingham City', 'West Bridgford', 'Beeston', 'Long Eaton',
+  'Hucknall', 'Arnold', 'Carlton', 'Gedling', 'Radcliffe on Trent', 'Ruddington',
+];
+
+const JOB_TYPES = [
+  'Consumer unit / fuse board',
+  'Full or partial rewire',
+  'EV charger installation',
+  'EICR inspection',
+  'Sockets or lighting',
+  'Smart home wiring',
+  'Fault finding',
+  'Other',
+];
+
+// ─── Hooks ───────────────────────────────────────────────────────────────────
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll('[data-reveal]');
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+// ─── Icons ───────────────────────────────────────────────────────────────────
+function BoltIcon({ size = 22 }: { size?: number }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M13 2L5 13H12L11 22L19 11H12L13 2Z" fill={C.amber} />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2L4 6V12C4 16.4 7.4 20.5 12 22C16.6 20.5 20 16.4 20 12V6L12 2Z"
+        stroke={C.amber} strokeWidth="1.5" fill="none" />
+      <path d="M9 12L11 14L15 10" stroke={C.amber} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// ─── PCB background ───────────────────────────────────────────────────────────
+function PcbGrid() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+        backgroundImage: `
+          radial-gradient(circle, var(--pcb-dot) 1px, transparent 1px),
+          linear-gradient(var(--pcb-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--pcb-line) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px, 40px 40px, 40px 40px',
+        backgroundPosition: '20px 20px, 0 0, 0 0',
+      }}
+    />
+  );
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+function Hero() {
+  return (
+    <section style={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      justifyContent: 'center', padding: 'clamp(118px, 16vw, 148px) clamp(24px, 6vw, 80px) 80px',
+      position: 'relative', overflow: 'hidden',
+    }}>
+      <PcbGrid />
+      {/* Amber ambient glow */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', top: '30%', left: '55%', width: 600, height: 600,
+        borderRadius: '50%', background: 'radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 70%)',
+        pointerEvents: 'none', zIndex: 0,
+      }} />
+
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: 760 }}>
+        <div style={{
+          fontFamily: F.code, fontSize: '0.75rem', letterSpacing: '0.18em',
+          color: C.amber, marginBottom: 28,
+        }}>
+          {'// NOTTINGHAM ELECTRICIANS'}
+        </div>
+
+        <h1 style={{
+          fontFamily: F.display,
+          fontSize: 'clamp(3.8rem, 10vw, 8rem)',
+          lineHeight: 0.93, letterSpacing: '0.02em',
+          color: C.text, margin: '0 0 28px',
+        }}>
+          CLEAN WIRING.<br />
+          NO GUESSWORK.
+        </h1>
+
+        <p style={{
+          fontFamily: F.body, fontWeight: 300, fontSize: 'clamp(1rem, 2vw, 1.15rem)',
+          color: C.textDim, margin: '0 0 44px', lineHeight: 1.7, maxWidth: 460,
+        }}>
+          Fully insured, domestic &amp; commercial, OZEV-approved EV installers across Nottingham.
+        </p>
+
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <Link href="#quote" style={{
+            fontFamily: F.body, fontWeight: 600, fontSize: '0.95rem',
+            padding: '14px 30px', background: C.amber, color: AMBER_BTN_TEXT,
+            borderRadius: 2, textDecoration: 'none', letterSpacing: '0.02em',
+          }}>
+            Get a rapid quote →
+          </Link>
+          <Link href="/projects" style={{
+            fontFamily: F.body, fontWeight: 400, fontSize: '0.95rem',
+            padding: '13px 30px', border: `1px solid ${C.border}`,
+            color: C.textDim, borderRadius: 2, textDecoration: 'none',
+            letterSpacing: '0.02em',
+          }}>
+            See our work
+          </Link>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'flex', gap: 40, marginTop: 64, flexWrap: 'wrap' }}>
+          {[
+            ['500+', 'jobs completed'],
+            ['NICEIC', 'certified'],
+            ['24hr', 'response time'],
+          ].map(([stat, label]) => (
+            <div key={stat}>
+              <div style={{ fontFamily: F.code, fontSize: '1.05rem', color: C.amber, letterSpacing: '0.05em' }}>{stat}</div>
+              <div style={{ fontFamily: F.body, fontSize: '0.7rem', color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Wire start indicator */}
+      <div className="hidden lg:flex" style={{
+        position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+        flexDirection: 'column', alignItems: 'center', gap: 6, zIndex: 1,
+      }}>
+        <div style={{
+          fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.1em',
+        }}>SCROLL</div>
+        <div style={{ width: 1, height: 48, background: `linear-gradient(to bottom, ${C.textMuted}, transparent)` }} />
+      </div>
+    </section>
+  );
+}
+
+// ─── Circuit Row wrapper ──────────────────────────────────────────────────────
+function CircuitRow({
+  side,
+  label,
+  id,
+  children,
+}: {
+  side: 'left' | 'right';
+  label: string;
+  id?: string;
+  children: React.ReactNode;
+}) {
+  const isLeft = side === 'left';
+
+  return (
+    <div id={id} style={{ scrollMarginTop: 68, position: 'relative' }}>
+      {/* ── Desktop ── */}
+      <div
+        data-reveal
+        className="hidden lg:grid"
+        style={{
+          gridTemplateColumns: '1fr 80px 1fr',
+          position: 'relative',
+          alignItems: 'start',
+        }}
+      >
+        {/* Left content */}
+        <div style={{ padding: '48px 40px 48px 0' }}>
+          {isLeft ? children : null}
+        </div>
+
+        {/* Center: wire segment + node + traces */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          paddingTop: 52, position: 'relative',
+        }}>
+          <div style={{
+            fontFamily: F.code, fontSize: '0.58rem', color: C.textMuted,
+            letterSpacing: '0.1em', marginBottom: 10, textAlign: 'center',
+          }}>
+            {label}
+          </div>
+
+          {/* Node dot */}
+          <div
+            className="circuit-node"
+            style={{
+              width: 12, height: 12, borderRadius: '50%', background: C.amber,
+              border: `2px solid ${C.amberDim}`, position: 'relative', zIndex: 2, flexShrink: 0,
+            }}
+          >
+            {/* Horizontal trace toward card */}
+            <div
+              className={`trace-line${!isLeft ? ' trace-right' : ''}`}
+              style={{
+                position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+                width: 48, height: 1,
+                background: `linear-gradient(${isLeft ? 'to left' : 'to right'}, transparent, rgba(245,158,11,0.35))`,
+                ...(isLeft ? { right: '100%' } : { left: '100%' }),
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Right content */}
+        <div style={{ padding: '48px 0 48px 40px' }}>
+          {!isLeft ? children : null}
+        </div>
+      </div>
+
+      {/* ── Mobile ── */}
+      <div
+        data-reveal
+        className="lg:hidden"
+        style={{
+          padding: '32px 24px',
+          borderLeft: `2px solid rgba(245,158,11,0.3)`,
+          marginLeft: 24,
+          position: 'relative',
+        }}
+      >
+        {/* Mobile node */}
+        <div style={{
+          position: 'absolute', top: 36, left: -7,
+          width: 12, height: 12, borderRadius: '50%', background: C.amber,
+          border: `2px solid ${C.amberDim}`,
+        }} />
+        <div style={{
+          fontFamily: F.code, fontSize: '0.6rem', color: C.amber,
+          letterSpacing: '0.12em', marginBottom: 14,
+        }}>
+          {label}
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─── Card shell ───────────────────────────────────────────────────────────────
+function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div style={{
+      background: C.surface, border: `1px solid ${C.border}`,
+      borderRadius: 3, padding: '28px 28px',
+      ...style,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function CardLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      fontFamily: F.code, fontSize: '0.65rem', letterSpacing: '0.18em',
+      color: C.amber, textTransform: 'uppercase', marginBottom: 12,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function CardHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 style={{
+      fontFamily: F.display, fontSize: '1.9rem', letterSpacing: '0.04em',
+      color: C.text, margin: '0 0 14px', lineHeight: 1,
+    }}>
+      {children}
+    </h2>
+  );
+}
+
+// ─── 01 Fault Finder ─────────────────────────────────────────────────────────
+function FaultFinderCard() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const fault = FAULTS.find((f) => f.id === selected);
+
+  return (
+    <Card>
+      <CardLabel>Fault Finder</CardLabel>
+      <CardHeading>What&apos;s the problem?</CardHeading>
+      <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 20px', lineHeight: 1.65 }}>
+        Select a symptom for a plain-English likely cause and next step.
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+        {FAULTS.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setSelected(selected === f.id ? null : f.id)}
+            style={{
+              fontFamily: F.body, fontSize: '0.82rem', fontWeight: 400,
+              padding: '7px 14px', borderRadius: 2, cursor: 'pointer',
+              border: `1px solid ${selected === f.id ? C.amber : C.border}`,
+              background: selected === f.id ? 'rgba(245,158,11,0.1)' : 'transparent',
+              color: selected === f.id ? C.amber : C.textDim,
+              transition: 'all 0.2s',
+            }}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+      {fault && (
+        <div className="anim-fade-up" style={{
+          background: 'rgba(245,158,11,0.05)', border: `1px solid rgba(245,158,11,0.2)`,
+          borderRadius: 2, padding: '16px 18px',
+        }}>
+          <div style={{ fontFamily: F.code, fontSize: '0.65rem', color: C.amber, letterSpacing: '0.12em', marginBottom: 8 }}>
+            LIKELY CAUSE
+          </div>
+          <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.text, margin: '0 0 12px', lineHeight: 1.65 }}>
+            {fault.diagnosis}
+          </p>
+          <div style={{ fontFamily: F.code, fontSize: '0.65rem', color: C.amber, letterSpacing: '0.12em', marginBottom: 8 }}>
+            SUGGESTED ACTION
+          </div>
+          <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 14px', lineHeight: 1.65 }}>
+            {fault.action}
+          </p>
+          <Link href="/contact" style={{
+            fontFamily: F.body, fontSize: '0.82rem', fontWeight: 600,
+            color: AMBER_BTN_TEXT, background: C.amber, padding: '7px 16px',
+            borderRadius: 2, textDecoration: 'none', display: 'inline-block',
+          }}>
+            Book a fault inspection →
+          </Link>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// ─── 02 Rapid Quote ───────────────────────────────────────────────────────────
+function QuoteCard() {
+  const [form, setForm] = useState({ name: '', contact: '', postcode: '', job: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const inputStyle: React.CSSProperties = {
+    fontFamily: F.body, fontSize: '0.875rem', color: C.text,
+    background: C.bg, border: `1px solid ${C.border}`, borderRadius: 2,
+    padding: '10px 14px', width: '100%', outline: 'none',
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <Card id="quote">
+      <CardLabel>Rapid Quote</CardLabel>
+      <CardHeading>Get a price fast</CardHeading>
+      {submitted ? (
+        <div style={{ padding: '24px 0' }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: '50%',
+            background: 'rgba(245,158,11,0.12)', border: `1px solid ${C.amber}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <span style={{ color: C.amber, fontSize: '1.2rem' }}>✓</span>
+          </div>
+          <p style={{ fontFamily: F.body, fontSize: '1rem', fontWeight: 600, color: C.text, margin: '0 0 8px' }}>
+            Request received
+          </p>
+          <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: 0, lineHeight: 1.65 }}>
+            We&apos;ll be in touch within a few hours. For urgent jobs call{' '}
+            <a href="tel:01159000000" style={{ color: C.amber }}>0115 900 0000</a>.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div>
+              <label style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.12em', display: 'block', marginBottom: 6 }}>NAME</label>
+              <input required style={inputStyle} placeholder="Your name" value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.12em', display: 'block', marginBottom: 6 }}>PHONE / EMAIL</label>
+              <input required style={inputStyle} placeholder="07700 000000" value={form.contact}
+                onChange={(e) => setForm({ ...form, contact: e.target.value })} />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div>
+              <label style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.12em', display: 'block', marginBottom: 6 }}>POSTCODE</label>
+              <input required style={inputStyle} placeholder="NG1 1AA" value={form.postcode}
+                onChange={(e) => setForm({ ...form, postcode: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.12em', display: 'block', marginBottom: 6 }}>JOB TYPE</label>
+              <select required style={{ ...inputStyle, appearance: 'none' }} value={form.job}
+                onChange={(e) => setForm({ ...form, job: e.target.value })}>
+                <option value="">Select…</option>
+                {JOB_TYPES.map((j) => <option key={j} value={j}>{j}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.12em', display: 'block', marginBottom: 6 }}>MESSAGE (OPTIONAL)</label>
+            <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: 80 }} placeholder="Any details…"
+              value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+          </div>
+          <button type="submit" style={{
+            fontFamily: F.body, fontWeight: 600, fontSize: '0.9rem',
+            padding: '12px 24px', background: C.amber, color: AMBER_BTN_TEXT,
+            border: 'none', borderRadius: 2, cursor: 'pointer', letterSpacing: '0.02em',
+            alignSelf: 'flex-start',
+          }}>
+            Send request →
+          </button>
+        </form>
+      )}
+    </Card>
+  );
+}
+
+// ─── 03 Services ─────────────────────────────────────────────────────────────
+function ServicesCard() {
+  return (
+    <Card>
+      <CardLabel>Services</CardLabel>
+      <CardHeading>What we do</CardHeading>
+      <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 20 }}>
+        {SERVICES.map((s) => (
+          <div key={s.label} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '11px 0', borderBottom: `1px solid ${C.border}`,
+          }}>
+            <span style={{ fontSize: '1rem', width: 22, textAlign: 'center', flexShrink: 0 }}>{s.icon}</span>
+            <span style={{ fontFamily: F.body, fontSize: '0.9rem', color: C.text }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+      <Link href="/services" style={{
+        fontFamily: F.body, fontSize: '0.85rem', color: C.amber, textDecoration: 'none',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+      }}>
+        View all services →
+      </Link>
+    </Card>
+  );
+}
+
+// ─── 04 Recent Work ───────────────────────────────────────────────────────────
+function RecentWorkCard() {
+  return (
+    <Card>
+      <CardLabel>Recent Work</CardLabel>
+      <CardHeading>Fresh off the tools</CardHeading>
+      <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 20px', lineHeight: 1.65 }}>
+        A snapshot of recent jobs across Nottingham.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+        {RECENT_WORK.map((job) => (
+          <div key={job.title} style={{
+            border: `1px solid ${C.border}`, borderRadius: 2, padding: '14px 16px',
+            background: C.bg,
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
+              <div>
+                <div style={{ fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem', color: C.text }}>{job.title}</div>
+                <div style={{ fontFamily: F.code, fontSize: '0.7rem', color: C.textMuted, marginTop: 2 }}>{job.location}</div>
+              </div>
+              <span style={{
+                fontFamily: F.code, fontSize: '0.6rem', letterSpacing: '0.1em',
+                padding: '3px 8px', borderRadius: 2, flexShrink: 0,
+                ...job.tagStyle,
+              }}>
+                {job.tag}
+              </span>
+            </div>
+            <p style={{ fontFamily: F.body, fontSize: '0.82rem', color: C.textDim, margin: 0, lineHeight: 1.6 }}>{job.desc}</p>
+          </div>
+        ))}
+      </div>
+      <Link href="/projects" style={{
+        fontFamily: F.body, fontSize: '0.85rem', color: C.amber, textDecoration: 'none',
+      }}>
+        See all projects →
+      </Link>
+    </Card>
+  );
+}
+
+// ─── 05 Safety & Compliance ───────────────────────────────────────────────────
+function SafetyCard() {
+  return (
+    <Card>
+      <CardLabel>Safety &amp; Compliance</CardLabel>
+      <CardHeading>Done right, certified</CardHeading>
+      <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 24px', lineHeight: 1.65 }}>
+        Trust signals, not a sales pitch. Every job is completed to BS 7671 18th Edition wiring regulations.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {[
+          { icon: <ShieldIcon />, title: 'NICEIC Approved', body: 'Independently assessed. You can verify our registration on the NICEIC website.' },
+          { icon: '📋', title: 'Part P Certified', body: 'Notifiable electrical work is registered with Building Control automatically.' },
+          { icon: '🛡️', title: 'Fully Insured', body: 'Public liability and employers\' liability insurance on every job.' },
+          { icon: '📄', title: 'EICR Reports', body: 'Condition reports for landlords, buyers, and homeowners. Legally compliant.' },
+        ].map((item) => (
+          <div key={item.title} style={{
+            display: 'flex', gap: 14, padding: '12px 14px',
+            border: `1px solid ${C.border}`, borderRadius: 2, background: C.bg,
+          }}>
+            <div style={{ flexShrink: 0, marginTop: 2 }}>
+              {typeof item.icon === 'string'
+                ? <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
+                : item.icon}
+            </div>
+            <div>
+              <div style={{ fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem', color: C.text, marginBottom: 3 }}>{item.title}</div>
+              <div style={{ fontFamily: F.body, fontSize: '0.8rem', color: C.textDim, lineHeight: 1.6 }}>{item.body}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+// ─── 06 EV & Smart Home ───────────────────────────────────────────────────────
+function EVSmartCard() {
+  return (
+    <Card>
+      <CardLabel>EV &amp; Smart Home</CardLabel>
+      <CardHeading>Future-ready wiring</CardHeading>
+      <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 24px', lineHeight: 1.65 }}>
+        OZEV-approved installer. All major EV charger brands. Smart wiring from new-build to retrofit.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+        {[
+          { icon: '🚗', title: 'EV Home Charger', body: 'Ohme, Zappi, Easee and more. OZEV-registered. Dedicated circuit, typically 3–4 hours.' },
+          { icon: '💡', title: 'Smart Lighting', body: 'Lutron, Hue, bespoke wiring for automated scenes. New-build or retrofit.' },
+          { icon: '🔌', title: 'Smart Sockets', body: 'Wired smart sockets integrated with your home hub — Matter, Zigbee or proprietary.' },
+        ].map((item) => (
+          <div key={item.title} style={{
+            display: 'flex', gap: 14, padding: '14px 16px',
+            border: `1px solid ${C.border}`, borderRadius: 2, background: C.bg,
+          }}>
+            <span style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
+            <div>
+              <div style={{ fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem', color: C.text, marginBottom: 4 }}>{item.title}</div>
+              <div style={{ fontFamily: F.body, fontSize: '0.8rem', color: C.textDim, lineHeight: 1.6 }}>{item.body}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <Link href="/contact" style={{
+          fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem',
+          padding: '10px 20px', background: C.amber, color: AMBER_BTN_TEXT,
+          borderRadius: 2, textDecoration: 'none',
+        }}>
+          Get EV quote →
+        </Link>
+        <span style={{
+          fontFamily: F.code, fontSize: '0.65rem', letterSpacing: '0.1em',
+          padding: '10px 12px', border: `1px solid rgba(245,158,11,0.3)`,
+          borderRadius: 2, color: C.amber, display: 'flex', alignItems: 'center',
+        }}>
+          OZEV APPROVED
+        </span>
+      </div>
+    </Card>
+  );
+}
+
+// ─── 07 Coverage ─────────────────────────────────────────────────────────────
+function CoverageCard() {
+  return (
+    <Card id="coverage">
+      <CardLabel>Coverage</CardLabel>
+      <CardHeading>Nottingham &amp; surrounds</CardHeading>
+      <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 20px', lineHeight: 1.65 }}>
+        Based in Nottingham city centre, covering the wider area up to 20 miles out.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+        {AREAS.map((area) => (
+          <div key={area} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '8px 0', borderBottom: `1px solid ${C.border}`,
+            fontFamily: F.body, fontSize: '0.875rem', color: C.text,
+          }}>
+            <span style={{
+              width: 5, height: 5, borderRadius: '50%',
+              background: C.amber, flexShrink: 0, display: 'inline-block',
+              boxShadow: `0 0 4px ${C.amberGlow}`,
+            }} />
+            {area}
+          </div>
+        ))}
+      </div>
+      <p style={{ fontFamily: F.body, fontSize: '0.8rem', color: C.textMuted, margin: '16px 0 0', lineHeight: 1.65 }}>
+        Not listed?{' '}
+        <Link href="/contact" style={{ color: C.amber, textDecoration: 'none' }}>Get in touch</Link>
+        {' '}— we cover up to 20 miles from Nottingham city centre.
+      </p>
+    </Card>
+  );
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+function Footer() {
+  return (
+    <footer style={{
+      background: C.surface, borderTop: `1px solid ${C.border}`,
+      padding: '60px clamp(24px, 6vw, 80px) 40px',
+    }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 40, marginBottom: 48 }}>
+          {/* Brand */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <BoltIcon size={16} />
+              <span style={{ fontFamily: F.display, fontSize: '1.3rem', letterSpacing: '0.06em', color: C.text }}>
+                ARC &amp; LINE
+              </span>
+            </div>
+            <div style={{ fontFamily: F.code, fontSize: '0.55rem', letterSpacing: '0.2em', color: C.textMuted, paddingLeft: 24 }}>
+              ELECTRICAL
+            </div>
+            <p style={{ fontFamily: F.body, fontSize: '0.8rem', color: C.textDim, margin: '16px 0 0', maxWidth: 240, lineHeight: 1.65 }}>
+              Safety-first electrics. Clear quotes. Clean finishes.
+            </p>
+          </div>
+
+          {/* Phone */}
+          <div>
+            <div style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.15em', marginBottom: 10 }}>
+              CALL US
+            </div>
+            <a href="tel:01159000000" style={{
+              fontFamily: F.code, fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              color: C.amber, textDecoration: 'none', letterSpacing: '0.05em',
+              display: 'block',
+            }}>
+              0115 900 0000
+            </a>
+            <a href="mailto:hello@arcandline.co.uk" style={{
+              fontFamily: F.body, fontSize: '0.85rem', color: C.textDim,
+              textDecoration: 'none', display: 'block', marginTop: 8,
+            }}>
+              hello@arcandline.co.uk
+            </a>
+            <p style={{ fontFamily: F.body, fontSize: '0.75rem', color: C.textMuted, margin: '10px 0 0', lineHeight: 1.6 }}>
+              Mon–Fri 7am–6pm · Sat 8am–2pm<br />Emergency callouts available
+            </p>
+          </div>
+
+          {/* Links */}
+          <div>
+            <div style={{ fontFamily: F.code, fontSize: '0.6rem', color: C.textMuted, letterSpacing: '0.15em', marginBottom: 12 }}>
+              NAVIGATE
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[['Services', '/services'], ['Projects', '/projects'], ['Contact', '/contact']].map(([label, href]) => (
+                <Link key={label} href={href} style={{
+                  fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, textDecoration: 'none',
+                }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
+
+        {/* Bottom bar */}
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
+          paddingTop: 24, borderTop: `1px solid ${C.border}`,
+        }}>
+          <span style={{ fontFamily: F.body, fontSize: '0.75rem', color: C.textMuted }}>
+            © 2026 Arc &amp; Line Electrical Ltd. Nottingham.
+          </span>
+          <span style={{
+            fontFamily: F.code, fontSize: '0.65rem', letterSpacing: '0.1em',
+            color: C.textMuted,
+          }}>
+            NICEIC · PART P · OZEV
+          </span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function HomePage() {
+  useScrollReveal();
+
+  return (
+    <div style={{ background: C.bg, minHeight: '100vh', color: C.text }}>
+      <TopIslandNav />
+      <Hero />
+
+      {/* Circuit sections */}
+      <main style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', padding: '0 clamp(20px, 4vw, 40px) 80px' }}>
+        {/* Vertical wire — desktop only */}
+        <div
+          aria-hidden="true"
+          className="hidden lg:block"
+          style={{
+            position: 'absolute', top: 0, bottom: 0,
+            left: '50%', width: 1, transform: 'translateX(-50%)',
+            backgroundImage: `repeating-linear-gradient(to bottom, rgba(245,158,11,0.18) 0px, rgba(245,158,11,0.18) 6px, transparent 6px, transparent 12px)`,
+            pointerEvents: 'none', zIndex: 0,
+          }}
+        />
+
+        <CircuitRow side="left"  label="01">  <FaultFinderCard /></CircuitRow>
+        <CircuitRow side="right" label="02" id="quote"><QuoteCard /></CircuitRow>
+        <CircuitRow side="left"  label="03">  <ServicesCard /></CircuitRow>
+        <CircuitRow side="right" label="04">  <RecentWorkCard /></CircuitRow>
+        <CircuitRow side="left"  label="05">  <SafetyCard /></CircuitRow>
+        <CircuitRow side="right" label="06">  <EVSmartCard /></CircuitRow>
+        <CircuitRow side="left"  label="07" id="coverage"><CoverageCard /></CircuitRow>
       </main>
+
+      <Footer />
+
     </div>
   );
 }
