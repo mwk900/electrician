@@ -2,10 +2,19 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { InlineToggle } from './BulbToggle';
+import { usePathname } from 'next/navigation';
 
 export default function MobileHeader() {
   const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const pathname = usePathname();
+
+  function handleBrandClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    setEmergencyOpen(false);
+    if (pathname === '/') {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
   return (
     <>
@@ -20,7 +29,7 @@ export default function MobileHeader() {
         }}
       >
         {/* Brand */}
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
+        <Link href="/" onClick={handleBrandClick} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
           <span style={{ fontSize: '1.1rem' }}>⚡</span>
           <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>Arc &amp; Line</span>
         </Link>
@@ -56,7 +65,6 @@ export default function MobileHeader() {
             </span>
           </button>
 
-          <InlineToggle />
         </div>
       </header>
 

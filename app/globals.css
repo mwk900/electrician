@@ -54,6 +54,11 @@
   --tag-dom-text: #93c5fd;
   --tag-com:      #2a1a10;
   --tag-com-text: #fb923c;
+
+  /* Frosted overlays (homepage readability) */
+  --frost-surface: rgba(17, 20, 24, 0.72);
+  --frost-border:  rgba(232, 234, 237, 0.14);
+  --frost-shadow:  0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
 /* ── Light theme ────────────────────────────────────────────── */
@@ -98,6 +103,11 @@
   --tag-dom-text: #1E40AF;
   --tag-com:      #FEF3C7;
   --tag-com-text: #92400E;
+
+  /* Frosted overlays (homepage readability) */
+  --frost-surface: rgba(255, 255, 255, 0.7);
+  --frost-border:  rgba(28, 28, 30, 0.12);
+  --frost-shadow:  0 14px 34px rgba(15, 23, 42, 0.12);
 }
 
 /* ── Base ────────────────────────────────────────────────────── */

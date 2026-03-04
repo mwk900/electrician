@@ -4,15 +4,28 @@ import { useEffect, useState } from 'react';
 import { toggleTheme, getActiveTheme, type Theme } from '@/lib/theme';
 
 const CORD_H = 80; // px — length of cord above the bulb
+const MOBILE_CORD_H = 116; // px — keep bulb lower on mobile so it doesn't compete with nav content
 
 export default function HangingBulb() {
   const [theme, setTheme]   = useState<Theme>('dark');
   const [swaying, setSwaying] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setTheme(getActiveTheme());
+    const mql = window.matchMedia('(max-width: 767px)');
+    const applyMatch = () => setIsMobile(mql.matches);
+    applyMatch();
     setMounted(true);
+
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', applyMatch);
+      return () => mql.removeEventListener('change', applyMatch);
+    }
+
+    mql.addListener(applyMatch);
+    return () => mql.removeListener(applyMatch);
   }, []);
 
   function handleClick() {
@@ -25,6 +38,7 @@ export default function HangingBulb() {
   if (!mounted) return null;
 
   const isOn = theme === 'light';
+  const cordHeight = isMobile ? MOBILE_CORD_H : CORD_H;
 
   return (
     /*
@@ -65,7 +79,7 @@ export default function HangingBulb() {
         aria-hidden="true"
         style={{
           width:      2,
-          height:     CORD_H,
+          height:     cordHeight,
           background: isOn
             ? 'linear-gradient(to bottom, rgba(160,120,40,0.65), rgba(160,120,40,0.2))'
             : 'linear-gradient(to bottom, rgba(70,82,105,0.55), rgba(40,50,70,0.15))',
@@ -88,11 +102,12 @@ export default function HangingBulb() {
           cursor:        'pointer',
           display:       'block',
           lineHeight:    0,
+          transform:     'rotate(180deg)',
           /* Warm glow when lights are on */
           filter: isOn
             ? 'drop-shadow(0 0 7px rgba(253,230,138,0.9)) drop-shadow(0 0 22px rgba(245,158,11,0.45))'
             : 'drop-shadow(0 2px 3px rgba(0,0,0,0.45))',
-          transition: 'filter 0.55s ease',
+          transition: 'filter 0.55s ease, transform 0.55s ease',
         }}
       >
         <BulbSVG on={isOn} />

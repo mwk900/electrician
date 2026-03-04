@@ -9,6 +9,9 @@ const C = {
   bg:        'var(--bg)',
   surface:   'var(--surface)',
   border:    'var(--border)',
+  frostSurface: 'var(--frost-surface)',
+  frostBorder:  'var(--frost-border)',
+  frostShadow:  'var(--frost-shadow)',
   amber:     'var(--amber)',
   amberDim:  'var(--amber-dim)',
   amberGlow: 'var(--amber-glow)',
@@ -175,7 +178,7 @@ function PcbGrid() {
 function Hero() {
   return (
     <section style={{
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      minHeight: 'clamp(700px, 82vh, 920px)', display: 'flex', flexDirection: 'column',
       justifyContent: 'center', padding: 'clamp(118px, 16vw, 148px) clamp(24px, 6vw, 80px) 80px',
       position: 'relative', overflow: 'hidden',
     }}>
@@ -187,61 +190,77 @@ function Hero() {
         pointerEvents: 'none', zIndex: 0,
       }} />
 
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: 760 }}>
+      <div
+        style={{ position: 'relative', zIndex: 1, maxWidth: 1220, margin: '0 auto', width: '100%' }}
+        className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(460px,0.9fr)] lg:gap-8 lg:items-start"
+      >
         <div style={{
-          fontFamily: F.code, fontSize: '0.75rem', letterSpacing: '0.18em',
-          color: C.amber, marginBottom: 28,
+          background: C.frostSurface,
+          border: `1px solid ${C.frostBorder}`,
+          borderRadius: 10,
+          backdropFilter: 'blur(14px)',
+          boxShadow: C.frostShadow,
+          padding: 'clamp(20px, 3vw, 34px)',
         }}>
-          {'// NOTTINGHAM ELECTRICIANS'}
+          <div style={{
+            fontFamily: F.code, fontSize: '0.75rem', letterSpacing: '0.18em',
+            color: C.amber, marginBottom: 28,
+          }}>
+            {'// NOTTINGHAM ELECTRICIANS'}
+          </div>
+
+          <h1 style={{
+            fontFamily: F.display,
+            fontSize: 'clamp(3.8rem, 10vw, 8rem)',
+            lineHeight: 0.93, letterSpacing: '0.02em',
+            color: C.text, margin: '0 0 28px',
+          }}>
+            CLEAN WIRING.<br />
+            NO GUESSWORK.
+          </h1>
+
+          <p style={{
+            fontFamily: F.body, fontWeight: 300, fontSize: 'clamp(1rem, 2vw, 1.15rem)',
+            color: C.textDim, margin: '0 0 44px', lineHeight: 1.7, maxWidth: 460,
+          }}>
+            Fully insured, domestic &amp; commercial, OZEV-approved EV installers across Nottingham.
+          </p>
+
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Link href="#quote" style={{
+              fontFamily: F.body, fontWeight: 600, fontSize: '0.95rem',
+              padding: '14px 30px', background: C.amber, color: AMBER_BTN_TEXT,
+              borderRadius: 2, textDecoration: 'none', letterSpacing: '0.02em',
+            }}>
+              Get a rapid quote →
+            </Link>
+            <Link href="/projects" style={{
+              fontFamily: F.body, fontWeight: 400, fontSize: '0.95rem',
+              padding: '13px 30px', border: `1px solid ${C.border}`,
+              color: C.textDim, borderRadius: 2, textDecoration: 'none',
+              letterSpacing: '0.02em',
+            }}>
+              See our work
+            </Link>
+          </div>
+
+          {/* Stats */}
+          <div style={{ display: 'flex', gap: 40, marginTop: 64, flexWrap: 'wrap' }}>
+            {[
+              ['500+', 'jobs completed'],
+              ['NICEIC', 'certified'],
+              ['24hr', 'response time'],
+            ].map(([stat, label]) => (
+              <div key={stat}>
+                <div style={{ fontFamily: F.code, fontSize: '1.05rem', color: C.amber, letterSpacing: '0.05em' }}>{stat}</div>
+                <div style={{ fontFamily: F.body, fontSize: '0.7rem', color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <h1 style={{
-          fontFamily: F.display,
-          fontSize: 'clamp(3.8rem, 10vw, 8rem)',
-          lineHeight: 0.93, letterSpacing: '0.02em',
-          color: C.text, margin: '0 0 28px',
-        }}>
-          CLEAN WIRING.<br />
-          NO GUESSWORK.
-        </h1>
-
-        <p style={{
-          fontFamily: F.body, fontWeight: 300, fontSize: 'clamp(1rem, 2vw, 1.15rem)',
-          color: C.textDim, margin: '0 0 44px', lineHeight: 1.7, maxWidth: 460,
-        }}>
-          Fully insured, domestic &amp; commercial, OZEV-approved EV installers across Nottingham.
-        </p>
-
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link href="#quote" style={{
-            fontFamily: F.body, fontWeight: 600, fontSize: '0.95rem',
-            padding: '14px 30px', background: C.amber, color: AMBER_BTN_TEXT,
-            borderRadius: 2, textDecoration: 'none', letterSpacing: '0.02em',
-          }}>
-            Get a rapid quote →
-          </Link>
-          <Link href="/projects" style={{
-            fontFamily: F.body, fontWeight: 400, fontSize: '0.95rem',
-            padding: '13px 30px', border: `1px solid ${C.border}`,
-            color: C.textDim, borderRadius: 2, textDecoration: 'none',
-            letterSpacing: '0.02em',
-          }}>
-            See our work
-          </Link>
-        </div>
-
-        {/* Stats */}
-        <div style={{ display: 'flex', gap: 40, marginTop: 64, flexWrap: 'wrap' }}>
-          {[
-            ['500+', 'jobs completed'],
-            ['NICEIC', 'certified'],
-            ['24hr', 'response time'],
-          ].map(([stat, label]) => (
-            <div key={stat}>
-              <div style={{ fontFamily: F.code, fontSize: '1.05rem', color: C.amber, letterSpacing: '0.05em' }}>{stat}</div>
-              <div style={{ fontFamily: F.body, fontSize: '0.7rem', color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{label}</div>
-            </div>
-          ))}
+        <div id="fault-finder" style={{ marginTop: 18 }} className="lg:mt-2">
+          <FaultFinderCard />
         </div>
       </div>
 
@@ -362,8 +381,10 @@ function CircuitRow({
 function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div style={{
-      background: C.surface, border: `1px solid ${C.border}`,
+      background: C.frostSurface, border: `1px solid ${C.frostBorder}`,
       borderRadius: 3, padding: '28px 28px',
+      backdropFilter: 'blur(14px)',
+      boxShadow: C.frostShadow,
       ...style,
     }}>
       {children}
@@ -470,7 +491,7 @@ function QuoteCard() {
   };
 
   return (
-    <Card id="quote">
+    <Card>
       <CardLabel>Rapid Quote</CardLabel>
       <CardHeading>Get a price fast</CardHeading>
       {submitted ? (
@@ -693,7 +714,7 @@ function EVSmartCard() {
 // ─── 07 Coverage ─────────────────────────────────────────────────────────────
 function CoverageCard() {
   return (
-    <Card id="coverage">
+    <Card>
       <CardLabel>Coverage</CardLabel>
       <CardHeading>Nottingham &amp; surrounds</CardHeading>
       <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 20px', lineHeight: 1.65 }}>
@@ -815,7 +836,7 @@ export default function HomePage() {
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', color: C.text }}>
-      <TopIslandNav />
+      <TopIslandNav mobileEmergencyPlacement="bottom" />
       <Hero />
 
       {/* Circuit sections */}
@@ -832,13 +853,12 @@ export default function HomePage() {
           }}
         />
 
-        <CircuitRow side="left"  label="01">  <FaultFinderCard /></CircuitRow>
-        <CircuitRow side="right" label="02" id="quote"><QuoteCard /></CircuitRow>
-        <CircuitRow side="left"  label="03">  <ServicesCard /></CircuitRow>
-        <CircuitRow side="right" label="04">  <RecentWorkCard /></CircuitRow>
-        <CircuitRow side="left"  label="05">  <SafetyCard /></CircuitRow>
-        <CircuitRow side="right" label="06">  <EVSmartCard /></CircuitRow>
-        <CircuitRow side="left"  label="07" id="coverage"><CoverageCard /></CircuitRow>
+        <CircuitRow side="right" label="01" id="quote"><QuoteCard /></CircuitRow>
+        <CircuitRow side="left"  label="02">  <ServicesCard /></CircuitRow>
+        <CircuitRow side="right" label="03">  <RecentWorkCard /></CircuitRow>
+        <CircuitRow side="left"  label="04">  <SafetyCard /></CircuitRow>
+        <CircuitRow side="right" label="05">  <EVSmartCard /></CircuitRow>
+        <CircuitRow side="left"  label="06" id="coverage"><CoverageCard /></CircuitRow>
       </main>
 
       <Footer />

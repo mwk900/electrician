@@ -22,6 +22,13 @@ const pages = [
 export default function PanelNav() {
   const pathname = usePathname();
 
+  function handleBrandClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    if (pathname === '/') {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   return (
     <nav
       className="hidden lg:flex flex-col fixed top-0 left-0 h-full z-50"
@@ -35,7 +42,7 @@ export default function PanelNav() {
     >
       {/* Brand */}
       <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid var(--nav-border)' }}>
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <Link href="/" onClick={handleBrandClick} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: '1.1rem' }}>⚡</span>
           <div>
             <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.2 }}>
