@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Barlow_Condensed, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { themeScript } from "@/lib/theme";
 import HangingBulb from "@/components/BulbToggle";
 
-const bebasNeue = Bebas_Neue({
-  weight: "400",
+const barlowCondensed = Barlow_Condensed({
+  weight: "900",
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
 });
 
-const ibmPlexSans = IBM_Plex_Sans({
-  weight: ["300", "400", "600"],
+const inter = Inter({
+  weight: ["400", "500", "600"],
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body
-        className={`${bebasNeue.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
+        className={`${barlowCondensed.variable} ${inter.variable} ${ibmPlexMono.variable}`}
       >
         <HangingBulb />
         {children}

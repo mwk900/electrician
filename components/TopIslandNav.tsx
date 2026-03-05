@@ -14,8 +14,8 @@ const C = {
 };
 
 const F = {
-  display: 'var(--font-display, "Bebas Neue", sans-serif)',
-  body: 'var(--font-body, "IBM Plex Sans", system-ui, sans-serif)',
+  display: 'var(--font-display, "Barlow Condensed", sans-serif)',
+  body: 'var(--font-body, "Inter", system-ui, sans-serif)',
   code: 'var(--font-code, "IBM Plex Mono", monospace)',
 };
 
@@ -251,7 +251,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
                 aria-expanded={emergencyOpen}
                 aria-controls="emergency-contact-details"
                 aria-label={emergencyOpen ? 'Close emergency contact details' : 'Show emergency contact details'}
-                className={emergencyAtBottomOnMobile ? 'hidden md:inline-flex' : 'inline-flex'}
+                className="hidden md:inline-flex"
                 style={{
                   fontFamily: F.body,
                   fontWeight: 600,
@@ -280,7 +280,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
               <div
                 id="emergency-contact-details"
                 ref={desktopPanelRef}
-                className={emergencyAtBottomOnMobile ? 'hidden md:block' : undefined}
+                className="hidden md:block"
                 style={{
                   position: 'absolute',
                   top: 'calc(100% + 8px)',
@@ -315,7 +315,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
             aria-expanded={emergencyOpen}
             aria-controls="mobile-emergency-contact-details"
             aria-label={emergencyOpen ? 'Close emergency contact details' : 'Show emergency contact details'}
-            className="md:hidden"
+            className="inline-flex md:hidden"
             style={{
               position: 'fixed',
               bottom: 14,
@@ -335,7 +335,6 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
               letterSpacing: '0.02em',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
-              display: 'inline-flex',
               alignItems: 'center',
               gap: 7,
               backdropFilter: 'blur(14px)',

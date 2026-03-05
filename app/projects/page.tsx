@@ -9,7 +9,7 @@ const projects = [
     location: 'Beeston, Nottingham',
     duration: '4 hrs',
     tags: ['Domestic', 'Safety'],
-    image: 'https://images.unsplash.com/photo-1621905252507-b35e0f69d9bd?auto=format&fit=crop&w=800&q=80',
+    image: '/images/recent-work/consumer-unit-upgrade.svg',
     imageAlt: 'Modern consumer unit installation',
     before: 'Ageing 1980s fuse board with ceramic fuses — no RCD protection, no room for additional circuits.',
     after: 'New 18-way Hager consumer unit, all circuits RCD-protected, 10-year guarantee, satisfactory EICR issued same day.',

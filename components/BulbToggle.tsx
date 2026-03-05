@@ -7,25 +7,32 @@ const CORD_H = 80; // px — length of cord above the bulb
 const MOBILE_CORD_H = 116; // px — keep bulb lower on mobile so it doesn't compete with nav content
 
 export default function HangingBulb() {
-  const [theme, setTheme]   = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('dark');
   const [swaying, setSwaying] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setTheme(getActiveTheme());
     const mql = window.matchMedia('(max-width: 767px)');
     const applyMatch = () => setIsMobile(mql.matches);
-    applyMatch();
-    setMounted(true);
+    const syncFromBrowser = () => {
+      setTheme(getActiveTheme());
+      applyMatch();
+    };
+    const rafId = window.requestAnimationFrame(syncFromBrowser);
 
     if (typeof mql.addEventListener === 'function') {
       mql.addEventListener('change', applyMatch);
-      return () => mql.removeEventListener('change', applyMatch);
+      return () => {
+        window.cancelAnimationFrame(rafId);
+        mql.removeEventListener('change', applyMatch);
+      };
     }
 
     mql.addListener(applyMatch);
-    return () => mql.removeListener(applyMatch);
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      mql.removeListener(applyMatch);
+    };
   }, []);
 
   function handleClick() {
@@ -34,8 +41,6 @@ export default function HangingBulb() {
     setSwaying(true);
     setTimeout(() => setSwaying(false), 1900);
   }
-
-  if (!mounted) return null;
 
   const isOn = theme === 'light';
   const cordHeight = isMobile ? MOBILE_CORD_H : CORD_H;
@@ -53,7 +58,7 @@ export default function HangingBulb() {
         position:        'fixed',
         top:             0,
         right:           28,
-        zIndex:          60,
+        zIndex:          40,
         transformOrigin: 'top center',
         pointerEvents:   'none',
         display:         'flex',

@@ -23,8 +23,8 @@ const C = {
 const AMBER_BTN_TEXT = '#0a0c0f';
 
 const F = {
-  display: 'var(--font-display, "Bebas Neue", sans-serif)',
-  body:    'var(--font-body, "IBM Plex Sans", system-ui, sans-serif)',
+  display: 'var(--font-display, "Barlow Condensed", sans-serif)',
+  body:    'var(--font-body, "Inter", system-ui, sans-serif)',
   code:    'var(--font-code, "IBM Plex Mono", monospace)',
 };
 
@@ -68,36 +68,125 @@ const FAULTS = [
   },
 ];
 
+// ─── Service SVG icons ────────────────────────────────────────────────────────
+function SvcConsumerUnit() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="18" rx="2" />
+      <line x1="8" y1="3" x2="8" y2="21" />
+      <line x1="12" y1="8" x2="16" y2="8" />
+      <line x1="12" y1="12" x2="16" y2="12" />
+      <line x1="12" y1="16" x2="16" y2="16" />
+      <circle cx="5" cy="8" r="1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="16" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+function SvcRewire() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 12 C4 7 8 4 12 4 C16 4 20 7 20 12" />
+      <path d="M4 12 C4 17 8 20 12 20 C16 20 20 17 20 12" />
+      <line x1="2" y1="12" x2="6" y2="12" />
+      <line x1="18" y1="12" x2="22" y2="12" />
+    </svg>
+  );
+}
+function SvcEV() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="7" width="16" height="10" rx="2" />
+      <path d="M18 10h2a2 2 0 0 1 0 4h-2" />
+      <line x1="6" y1="17" x2="6" y2="20" />
+      <line x1="12" y1="17" x2="12" y2="20" />
+      <path d="M9 7V4l3 3-3 3" />
+    </svg>
+  );
+}
+function SvcEICR() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <polyline points="9 13 11 15 15 11" />
+    </svg>
+  );
+}
+function SvcSockets() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="12" cy="12" r="3" />
+      <line x1="10" y1="7" x2="10" y2="9" />
+      <line x1="14" y1="7" x2="14" y2="9" />
+    </svg>
+  );
+}
+function SvcSmartHome() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <path d="M8.5 15 C8.5 13.07 10.07 11.5 12 11.5 C13.93 11.5 15.5 13.07 15.5 15" />
+      <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+function SvcFaultFind() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <path d="M11 8v3l2 2" />
+    </svg>
+  );
+}
+function SvcCommercial() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="7" width="20" height="15" rx="1" />
+      <path d="M16 7V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" />
+      <line x1="12" y1="12" x2="12" y2="17" />
+      <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" />
+    </svg>
+  );
+}
+
 const SERVICES = [
-  { icon: '⚡', label: 'Consumer unit upgrades' },
-  { icon: '🔌', label: 'Full & partial rewires' },
-  { icon: '🚗', label: 'EV charger installation' },
-  { icon: '📋', label: 'EICR certificates' },
-  { icon: '💡', label: 'Sockets & lighting' },
-  { icon: '🏠', label: 'Smart home wiring' },
+  { icon: SvcConsumerUnit, label: 'Consumer unit upgrades' },
+  { icon: SvcRewire,       label: 'Full & partial rewires' },
+  { icon: SvcEV,           label: 'EV charger installation' },
+  { icon: SvcEICR,         label: 'EICR certificates' },
+  { icon: SvcSockets,      label: 'Sockets & lighting' },
+  { icon: SvcSmartHome,    label: 'Smart home wiring' },
+  { icon: SvcFaultFind,    label: 'Fault finding & diagnosis' },
+  { icon: SvcCommercial,   label: 'Commercial fit-outs' },
 ];
 
 const RECENT_WORK = [
   {
     title: 'Consumer Unit Upgrade',
-    location: 'Beeston',
+    location: 'Beeston, NG9',
     tag: 'DOMESTIC',
     tagStyle: { background: 'var(--tag-dom)', color: 'var(--tag-dom-text)' },
     desc: 'Old fuse board replaced with a modern unit — all circuits RCD-protected.',
+    img: '/images/recent-work/consumer-unit-upgrade.svg',
   },
   {
     title: 'EV Charger Install',
-    location: 'West Bridgford',
+    location: 'West Bridgford, NG2',
     tag: 'EV',
     tagStyle: { background: 'var(--tag-ev)', color: 'var(--tag-ev-text)' },
     desc: 'Ohme home charger installed with dedicated circuit run from consumer unit.',
+    img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80',
   },
   {
     title: 'Kitchen Full Rewire',
-    location: 'Arnold',
+    location: 'Arnold, NG5',
     tag: 'DOMESTIC',
     tagStyle: { background: 'var(--tag-dom)', color: 'var(--tag-dom-text)' },
     desc: 'New circuits for hob, oven, extractor and LED downlights. Tidy, fully certified.',
+    img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=800&q=80',
   },
 ];
 
@@ -177,11 +266,14 @@ function PcbGrid() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section style={{
+    <section
+      className="hero-section"
+      style={{
       minHeight: 'clamp(700px, 82vh, 920px)', display: 'flex', flexDirection: 'column',
       justifyContent: 'center', padding: 'clamp(118px, 16vw, 148px) clamp(24px, 6vw, 80px) 80px',
       position: 'relative', overflow: 'hidden',
-    }}>
+    }}
+    >
       <PcbGrid />
       {/* Amber ambient glow */}
       <div aria-hidden="true" style={{
@@ -194,14 +286,17 @@ function Hero() {
         style={{ position: 'relative', zIndex: 1, maxWidth: 1220, margin: '0 auto', width: '100%' }}
         className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(460px,0.9fr)] lg:gap-8 lg:items-start"
       >
-        <div style={{
+        <div
+          className="hero-lead-card"
+          style={{
           background: C.frostSurface,
           border: `1px solid ${C.frostBorder}`,
           borderRadius: 10,
           backdropFilter: 'blur(14px)',
           boxShadow: C.frostShadow,
           padding: 'clamp(20px, 3vw, 34px)',
-        }}>
+        }}
+        >
           <div style={{
             fontFamily: F.code, fontSize: '0.75rem', letterSpacing: '0.18em',
             color: C.amber, marginBottom: 28,
@@ -209,32 +304,38 @@ function Hero() {
             {'// NOTTINGHAM ELECTRICIANS'}
           </div>
 
-          <h1 style={{
+          <h1
+            className="hero-title"
+            style={{
             fontFamily: F.display,
             fontSize: 'clamp(3.8rem, 10vw, 8rem)',
             lineHeight: 0.93, letterSpacing: '0.02em',
             color: C.text, margin: '0 0 28px',
-          }}>
+          }}
+          >
             CLEAN WIRING.<br />
             NO GUESSWORK.
           </h1>
 
-          <p style={{
+          <p
+            className="hero-subtitle"
+            style={{
             fontFamily: F.body, fontWeight: 300, fontSize: 'clamp(1rem, 2vw, 1.15rem)',
             color: C.textDim, margin: '0 0 44px', lineHeight: 1.7, maxWidth: 460,
-          }}>
+          }}
+          >
             Fully insured, domestic &amp; commercial, OZEV-approved EV installers across Nottingham.
           </p>
 
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <Link href="#quote" style={{
+          <div className="hero-cta-row" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Link href="#quote" className="hero-cta-primary" style={{
               fontFamily: F.body, fontWeight: 600, fontSize: '0.95rem',
               padding: '14px 30px', background: C.amber, color: AMBER_BTN_TEXT,
               borderRadius: 2, textDecoration: 'none', letterSpacing: '0.02em',
             }}>
               Get a rapid quote →
             </Link>
-            <Link href="/projects" style={{
+            <Link href="/projects" className="hero-cta-secondary" style={{
               fontFamily: F.body, fontWeight: 400, fontSize: '0.95rem',
               padding: '13px 30px', border: `1px solid ${C.border}`,
               color: C.textDim, borderRadius: 2, textDecoration: 'none',
@@ -245,15 +346,15 @@ function Hero() {
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'flex', gap: 40, marginTop: 64, flexWrap: 'wrap' }}>
+          <div className="hero-stats" style={{ display: 'flex', gap: 40, marginTop: 64, flexWrap: 'wrap' }}>
             {[
               ['500+', 'jobs completed'],
               ['NICEIC', 'certified'],
               ['24hr', 'response time'],
             ].map(([stat, label]) => (
-              <div key={stat}>
-                <div style={{ fontFamily: F.code, fontSize: '1.05rem', color: C.amber, letterSpacing: '0.05em' }}>{stat}</div>
-                <div style={{ fontFamily: F.body, fontSize: '0.7rem', color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{label}</div>
+              <div key={stat} className="hero-stat-item">
+                <div className="hero-stat-value" style={{ fontFamily: F.code, fontSize: '1.05rem', color: C.amber, letterSpacing: '0.05em' }}>{stat}</div>
+                <div className="hero-stat-label" style={{ fontFamily: F.body, fontSize: '0.7rem', color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{label}</div>
               </div>
             ))}
           </div>
@@ -423,6 +524,24 @@ function FaultFinderCard() {
     <Card>
       <CardLabel>Fault Finder</CardLabel>
       <CardHeading>What&apos;s the problem?</CardHeading>
+      <div className="lg:hidden" style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '4px 10px',
+        border: `1px solid rgba(245,158,11,0.35)`,
+        background: 'rgba(245,158,11,0.08)',
+        color: C.amber,
+        borderRadius: 999,
+        fontFamily: F.code,
+        fontSize: '0.64rem',
+        letterSpacing: '0.09em',
+        textTransform: 'uppercase',
+        margin: '0 0 12px',
+      }}>
+        <span aria-hidden="true">●</span>
+        Interactive: tap a symptom
+      </div>
       <p style={{ fontFamily: F.body, fontSize: '0.875rem', color: C.textDim, margin: '0 0 20px', lineHeight: 1.65 }}>
         Select a symptom for a plain-English likely cause and next step.
       </p>
@@ -567,15 +686,18 @@ function ServicesCard() {
       <CardLabel>Services</CardLabel>
       <CardHeading>What we do</CardHeading>
       <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 20 }}>
-        {SERVICES.map((s) => (
-          <div key={s.label} style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '11px 0', borderBottom: `1px solid ${C.border}`,
-          }}>
-            <span style={{ fontSize: '1rem', width: 22, textAlign: 'center', flexShrink: 0 }}>{s.icon}</span>
-            <span style={{ fontFamily: F.body, fontSize: '0.9rem', color: C.text }}>{s.label}</span>
-          </div>
-        ))}
+        {SERVICES.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '11px 0', borderBottom: `1px solid ${C.border}`,
+            }}>
+              <span style={{ color: C.amber, flexShrink: 0, lineHeight: 0 }}><Icon /></span>
+              <span style={{ fontFamily: F.body, fontSize: '0.9rem', color: C.text }}>{s.label}</span>
+            </div>
+          );
+        })}
       </div>
       <Link href="/services" style={{
         fontFamily: F.body, fontSize: '0.85rem', color: C.amber, textDecoration: 'none',
@@ -599,23 +721,33 @@ function RecentWorkCard() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
         {RECENT_WORK.map((job) => (
           <div key={job.title} style={{
-            border: `1px solid ${C.border}`, borderRadius: 2, padding: '14px 16px',
+            border: `1px solid ${C.border}`, borderRadius: 2, overflow: 'hidden',
             background: C.bg,
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
-              <div>
-                <div style={{ fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem', color: C.text }}>{job.title}</div>
-                <div style={{ fontFamily: F.code, fontSize: '0.7rem', color: C.textMuted, marginTop: 2 }}>{job.location}</div>
-              </div>
+            {/* Project image */}
+            <div style={{ position: 'relative', height: 140, overflow: 'hidden' }}>
+              <img
+                src={job.img}
+                alt={job.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                loading="lazy"
+              />
               <span style={{
-                fontFamily: F.code, fontSize: '0.6rem', letterSpacing: '0.1em',
+                position: 'absolute', top: 8, right: 8,
+                fontFamily: F.code, fontSize: '0.58rem', letterSpacing: '0.1em',
                 padding: '3px 8px', borderRadius: 2, flexShrink: 0,
                 ...job.tagStyle,
               }}>
                 {job.tag}
               </span>
             </div>
-            <p style={{ fontFamily: F.body, fontSize: '0.82rem', color: C.textDim, margin: 0, lineHeight: 1.6 }}>{job.desc}</p>
+            <div style={{ padding: '12px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 4 }}>
+                <div style={{ fontFamily: F.body, fontWeight: 600, fontSize: '0.875rem', color: C.text }}>{job.title}</div>
+                <div style={{ fontFamily: F.code, fontSize: '0.68rem', color: C.amber, flexShrink: 0 }}>{job.location}</div>
+              </div>
+              <p style={{ fontFamily: F.body, fontSize: '0.82rem', color: C.textDim, margin: 0, lineHeight: 1.6 }}>{job.desc}</p>
+            </div>
           </div>
         ))}
       </div>

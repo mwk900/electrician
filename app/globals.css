@@ -2,8 +2,8 @@
 
 /* ── Font fallbacks (Next.js injects --font-display, --font-body, --font-code via layout.tsx) ── */
 :root {
-  --font-display-fallback: "Bebas Neue", Impact, sans-serif;
-  --font-body-fallback:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-display-fallback: "Barlow Condensed", Impact, sans-serif;
+  --font-body-fallback:    "Inter", system-ui, sans-serif;
   --font-code-fallback:    "IBM Plex Mono", ui-monospace, monospace;
 }
 
@@ -11,27 +11,27 @@
 :root,
 [data-theme="dark"] {
   /* PCB hero grid */
-  --pcb-dot:  rgba(30, 37, 48, 0.8);
-  --pcb-line: rgba(30, 37, 48, 0.28);
+  --pcb-dot:  rgba(255, 255, 255, 0.04);
+  --pcb-line: rgba(255, 255, 255, 0.03);
 
   /* New homepage tokens */
-  --bg:           #0a0c0f;
-  --surface:      #111418;
-  --border:       #1e2530;
-  --amber:        #f59e0b;
-  --amber-dim:    #b37a08;
-  --amber-glow:   rgba(245, 158, 11, 0.15);
+  --bg:           #111111;
+  --surface:      #1A1A1A;
+  --border:       rgba(255,255,255,0.1);
+  --amber:        #F5A623;
+  --amber-dim:    #D4891A;
+  --amber-glow:   rgba(245, 166, 35, 0.2);
   --text:         #e8eaed;
   --text-dim:     #7a8494;
   --text-muted:   #888888;
 
   /* Compat aliases — used by subpages */
-  --bg-surface:     #111418;
-  --bg-raised:      #161b22;
-  --border-strong:  #2e3740;
-  --accent:         #f59e0b;
-  --accent-hover:   #d97706;
-  --nav-bg:         rgba(10, 12, 15, 0.95);
+  --bg-surface:     #1A1A1A;
+  --bg-raised:      #222222;
+  --border-strong:  rgba(255,255,255,0.15);
+  --accent:         #F5A623;
+  --accent-hover:   #D4891A;
+  --nav-bg:         rgba(17, 17, 17, 0.95);
   --shadow:         0 1px 6px rgba(0,0,0,0.45), 0 4px 20px rgba(0,0,0,0.45);
   --shadow-sm:      0 1px 4px rgba(0,0,0,0.35);
   --tag-bg:         rgba(245,158,11,0.12);
@@ -64,38 +64,38 @@
 /* ── Light theme ────────────────────────────────────────────── */
 [data-theme="light"] {
   /* PCB hero grid */
-  --pcb-dot:  rgba(160, 138, 100, 0.55);
-  --pcb-line: rgba(160, 138, 100, 0.22);
+  --pcb-dot:  rgba(0, 0, 0, 0.08);
+  --pcb-line: rgba(0, 0, 0, 0.06);
 
-  --bg:           #FAF8F4;
-  --surface:      #FFFFFF;
-  --border:       #E5E0D8;
-  --amber:        #D97706;
-  --amber-dim:    #B45309;
-  --amber-glow:   rgba(217, 119, 6, 0.12);
-  --text:         #1C1C1E;
-  --text-dim:     #6B6B72;
-  --text-muted:   #6B6B72;
+  --bg:           #FFFFFF;
+  --surface:      #F5F5F5;
+  --border:       rgba(0,0,0,0.1);
+  --amber:        #F5A623;
+  --amber-dim:    #D4891A;
+  --amber-glow:   rgba(245, 166, 35, 0.25);
+  --text:         #111111;
+  --text-dim:     #555555;
+  --text-muted:   #888888;
 
-  --bg-surface:     #FFFFFF;
-  --bg-raised:      #F0EDE8;
-  --border-strong:  #C8BEB2;
-  --accent:         #D97706;
-  --accent-hover:   #B45309;
-  --nav-bg:         rgba(255, 252, 249, 0.96);
-  --shadow:         0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
-  --shadow-sm:      0 1px 3px rgba(0,0,0,0.05);
+  --bg-surface:     #F5F5F5;
+  --bg-raised:      #EBEBEB;
+  --border-strong:  rgba(0,0,0,0.15);
+  --accent:         #F5A623;
+  --accent-hover:   #D4891A;
+  --nav-bg:         rgba(255, 255, 255, 0.96);
+  --shadow:         0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06);
   --tag-bg:         #FEF3C7;
   --tag-text:       #92400E;
   --status-on:      #16A34A;
-  --focus-ring:     #D97706;
-  --btn-primary:         #1C1C1E;
-  --btn-primary-text:    #FAF8F4;
-  --btn-primary-hover:   #374151;
-  --btn-outline-border:  #C8BEB2;
+  --focus-ring:     #F5A623;
+  --btn-primary:         #F5A623;
+  --btn-primary-text:    #111111;
+  --btn-primary-hover:   #D4891A;
+  --btn-outline-border:  rgba(0,0,0,0.15);
 
-  --circuit-line: rgba(175, 150, 115, 0.18);
-  --circuit-node: rgba(175, 150, 115, 0.32);
+  --circuit-line: rgba(0, 0, 0, 0.06);
+  --circuit-node: rgba(245, 166, 35, 0.4);
 
   --tag-ev:       #D1FAE5;
   --tag-ev-text:  #065F46;
@@ -105,9 +105,9 @@
   --tag-com-text: #92400E;
 
   /* Frosted overlays (homepage readability) */
-  --frost-surface: rgba(255, 255, 255, 0.7);
-  --frost-border:  rgba(28, 28, 30, 0.12);
-  --frost-shadow:  0 14px 34px rgba(15, 23, 42, 0.12);
+  --frost-surface: rgba(255, 255, 255, 0.85);
+  --frost-border:  rgba(0, 0, 0, 0.1);
+  --frost-shadow:  0 14px 34px rgba(0, 0, 0, 0.1);
 }
 
 /* ── Base ────────────────────────────────────────────────────── */
@@ -227,6 +227,63 @@ a:focus-visible, button:focus-visible {
 .anim-fade-up { animation: fade-up 0.35s ease-out forwards; }
 .anim-pulse   { animation: pulse-amber 2.2s ease-in-out infinite; }
 .anim-glow    { animation: glow-pulse 2.5s ease-in-out infinite; }
+
+/* ── Home Hero mobile compression ────────────────────────────── */
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: auto !important;
+    padding: 98px 16px 44px !important;
+  }
+
+  .hero-lead-card {
+    padding: 18px 16px !important;
+    border-radius: 8px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(2.45rem, 11vw, 3.25rem) !important;
+    margin: 0 0 16px !important;
+    letter-spacing: 0.015em !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.94rem !important;
+    margin: 0 0 22px !important;
+    line-height: 1.55 !important;
+  }
+
+  .hero-cta-row {
+    gap: 8px !important;
+  }
+
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    font-size: 0.88rem !important;
+    padding: 10px 18px !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .hero-stats {
+    margin-top: 28px !important;
+    gap: 12px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero-stat-item {
+    min-width: 0;
+  }
+
+  .hero-stat-value {
+    font-size: 0.92rem !important;
+  }
+
+  .hero-stat-label {
+    font-size: 0.56rem !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1.35 !important;
+  }
+}
 
 /* ── Hanging bulb sway ─────────────────────────────────────── */
 @keyframes bulb-sway {
