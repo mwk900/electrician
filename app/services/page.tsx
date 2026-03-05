@@ -151,13 +151,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </div>
-
-      {/* Mobile sticky CTA */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 flex gap-3 px-4 py-3"
-        style={{ background: 'var(--nav-bg)', borderTop: '1px solid var(--border)', boxShadow: '0 -2px 12px rgba(0,0,0,0.1)' }}>
-        <a href="tel:01159000000" className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: '12px 0' }}>📞 Call Now</a>
-        <Link href="/contact" className="btn-outline" style={{ flex: 1, justifyContent: 'center', padding: '12px 0' }}>Get Quote</Link>
-      </div>
     </div>
   );
 }

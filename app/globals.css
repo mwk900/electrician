@@ -178,6 +178,80 @@ a:focus-visible, button:focus-visible {
   outline-offset: 2px;
 }
 
+/* ── Top nav mobile unclutter ───────────────────────────────── */
+@media (max-width: 767px) {
+  .top-island-nav {
+    top: 8px !important;
+    width: calc(100% - 8px) !important;
+  }
+
+  .top-island-nav-shell {
+    padding: 5px 6px !important;
+    gap: 6px !important;
+    border-radius: 10px !important;
+  }
+
+  .top-island-brand {
+    padding: 4px 6px 4px 5px !important;
+    border-radius: 8px !important;
+  }
+
+  .top-island-brand > span:first-child {
+    gap: 5px !important;
+  }
+
+  .top-island-brand svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .top-island-brand-text {
+    font-size: 0.95rem !important;
+    letter-spacing: 0.045em !important;
+  }
+
+  .top-island-brand-subtext {
+    font-size: 0.42rem !important;
+    letter-spacing: 0.15em !important;
+    padding-left: 19px !important;
+  }
+
+  .top-island-links {
+    flex: 1 1 auto !important;
+    margin-left: 4px !important;
+    justify-content: space-between !important;
+    gap: 4px !important;
+  }
+
+  .top-island-link {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    font-size: 0.69rem !important;
+    padding: 6px 4px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .top-island-brand svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .top-island-brand-text {
+    font-size: 0.87rem !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  .top-island-brand-subtext {
+    display: none !important;
+  }
+
+  .top-island-link {
+    font-size: 0.64rem !important;
+    padding: 6px 3px !important;
+  }
+}
+
 /* ── Scroll reveal ────────────────────────────────────────────── */
 [data-reveal] {
   opacity: 0;

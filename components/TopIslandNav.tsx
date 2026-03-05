@@ -99,7 +99,7 @@ function EmergencyPanelContent({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: TopIslandNavProps) {
+export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: TopIslandNavProps) {
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const pathname = usePathname();
 
@@ -145,6 +145,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
   return (
     <>
       <nav
+        className="top-island-nav"
         style={{
           position: 'fixed',
           top: 14,
@@ -155,6 +156,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
         }}
       >
         <div
+          className="top-island-nav-shell"
           style={{
             position: 'relative',
             display: 'flex',
@@ -172,6 +174,7 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
           <Link
             href="/"
             onClick={handleLogoClick}
+            className="top-island-brand"
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -186,29 +189,36 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
           >
             <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
               <BoltIcon size={16} />
-              <span style={{
-                fontFamily: F.display,
-                fontSize: 'clamp(1.05rem, 5vw, 1.45rem)',
-                letterSpacing: '0.06em',
-                color: C.text,
-                lineHeight: 1,
-              }}>
+              <span
+                className="top-island-brand-text"
+                style={{
+                  fontFamily: F.display,
+                  fontSize: 'clamp(1.05rem, 5vw, 1.45rem)',
+                  letterSpacing: '0.06em',
+                  color: C.text,
+                  lineHeight: 1,
+                }}
+              >
                 ARC &amp; LINE
               </span>
             </span>
-            <span style={{
-              fontFamily: F.code,
-              fontSize: 'clamp(0.46rem, 1.6vw, 0.55rem)',
-              letterSpacing: '0.2em',
-              color: C.textMuted,
-              paddingLeft: 23,
-              lineHeight: 1,
-            }}>
+            <span
+              className="top-island-brand-subtext"
+              style={{
+                fontFamily: F.code,
+                fontSize: 'clamp(0.46rem, 1.6vw, 0.55rem)',
+                letterSpacing: '0.2em',
+                color: C.textMuted,
+                paddingLeft: 23,
+                lineHeight: 1,
+              }}
+            >
               ELECTRICAL
             </span>
           </Link>
 
           <div
+            className="top-island-links"
             style={{
               display: 'flex',
               flexWrap: 'nowrap',
@@ -226,7 +236,11 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'inline' }: To
               <Link
                 key={item.label}
                 href={item.href}
+                className="top-island-link"
                 style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   fontFamily: F.body,
                   fontSize: '0.78rem',
                   color: C.textDim,
