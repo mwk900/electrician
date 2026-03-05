@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const C = {
   surface: 'var(--surface)',
   border: 'var(--border)',
   amber: 'var(--amber)',
+  frostSurface: 'var(--frost-surface)',
+  frostBorder: 'var(--frost-border)',
+  frostShadow: 'var(--frost-shadow)',
   text: 'var(--text)',
   textDim: 'var(--text-dim)',
   textMuted: 'var(--text-muted)',
@@ -101,7 +104,9 @@ function EmergencyPanelContent({ onClose }: { onClose: () => void }) {
 
 export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: TopIslandNavProps) {
   const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const desktopPanelRef = useRef<HTMLDivElement | null>(null);
   const desktopButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -116,6 +121,43 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: To
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  }
+
+  const scrollToCoverage = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    const el = document.getElementById('coverage');
+    if (!el) return false;
+    el.scrollIntoView({ behavior, block: 'start' });
+    return true;
+  }, []);
+
+  function handleCoverageClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    setEmergencyOpen(false);
+
+    if (pathname === '/') {
+      event.preventDefault();
+      if (!scrollToCoverage('smooth')) {
+        window.location.hash = 'coverage';
+        return;
+      }
+      if (window.location.hash !== '#coverage') {
+        window.history.replaceState(null, '', '/#coverage');
+      }
+      return;
+    }
+
+    event.preventDefault();
+    router.push('/#coverage');
   }
 
   useEffect(() => {
@@ -142,6 +184,36 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: To
     };
   }, [emergencyOpen]);
 
+  useEffect(() => {
+    function onScroll() {
+      setHasScrolled(window.scrollY > 40);
+    }
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (pathname !== '/' || window.location.hash !== '#coverage') return undefined;
+
+    let attempts = 0;
+    let timerId: number | undefined;
+
+    function ensureCoverageScroll() {
+      if (scrollToCoverage(attempts === 0 ? 'auto' : 'smooth')) return;
+      if (attempts >= 24) return;
+      attempts += 1;
+      timerId = window.setTimeout(ensureCoverageScroll, 80);
+    }
+
+    ensureCoverageScroll();
+
+    return () => {
+      if (timerId !== undefined) window.clearTimeout(timerId);
+    };
+  }, [pathname, scrollToCoverage]);
+
   return (
     <>
       <nav
@@ -164,11 +236,6 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: To
             justifyContent: 'space-between',
             gap: 8,
             padding: '8px 10px',
-            border: `1px solid ${C.border}`,
-            borderRadius: 12,
-            background: `linear-gradient(135deg, var(--nav-bg) 0%, ${C.surface} 100%)`,
-            backdropFilter: 'blur(18px)',
-            boxShadow: '0 10px 26px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
           }}
         >
           <Link
@@ -180,9 +247,14 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: To
               flexDirection: 'column',
               gap: 1,
               padding: '6px 10px 6px 8px',
-              border: `1px solid ${C.border}`,
+              border: hasScrolled ? `1px solid ${C.frostBorder}` : `1px solid ${C.border}`,
               borderRadius: 9,
-              background: 'linear-gradient(150deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02))',
+              background: hasScrolled
+                ? C.frostSurface
+                : 'linear-gradient(150deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02))',
+              backdropFilter: hasScrolled ? 'blur(14px) saturate(115%)' : 'none',
+              boxShadow: hasScrolled ? C.frostShadow : 'none',
+              transition: 'background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, backdrop-filter 180ms ease',
               flexShrink: 0,
               textDecoration: 'none',
             }}
@@ -236,20 +308,25 @@ export default function TopIslandNav({ mobileEmergencyPlacement = 'bottom' }: To
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={item.label === 'Coverage' ? handleCoverageClick : undefined}
                 className="top-island-link"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontFamily: F.body,
+                  fontWeight: 600,
                   fontSize: '0.78rem',
-                  color: C.textDim,
+                  color: AMBER_BTN_TEXT,
+                  opacity: 1,
                   textDecoration: 'none',
                   letterSpacing: '0.02em',
                   borderRadius: 8,
                   padding: '7px 9px',
-                  border: `1px solid ${C.border}`,
-                  background: 'linear-gradient(150deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))',
+                  border: `1px solid ${C.amber}`,
+                  background: `linear-gradient(150deg, rgba(255,255,255,0.16), ${C.amber} 36%, var(--amber-dim) 100%)`,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22), 0 3px 10px rgba(245,166,35,0.24)',
+                  transition: 'background 180ms ease, border-color 180ms ease, box-shadow 180ms ease',
                   whiteSpace: 'nowrap',
                 }}
               >

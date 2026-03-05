@@ -188,7 +188,6 @@ a:focus-visible, button:focus-visible {
   .top-island-nav-shell {
     padding: 5px 6px !important;
     gap: 6px !important;
-    border-radius: 10px !important;
   }
 
   .top-island-brand {
